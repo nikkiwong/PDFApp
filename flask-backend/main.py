@@ -33,14 +33,17 @@ def splitPDF():
     pdf = PdfFileReader(path, "rb")
 
     pdf_writer = PdfFileWriter()
+    indexNum = 0
+    # can take in variable for how many splits.. but for now I will hard code
+    for index in range(0, pageNum, 3):
+        for page in range(index, pageNum):
+            pdf_writer.addPage(pdf.getPage(page))
 
-    for page in range(1, pageNum):
-        pdf_writer.addPage(pdf.getPage(page))
-
-    output_fname = "Output.pdf"
-
-    with open(output_fname, 'wb') as out:
-        pdf_writer.write(out)
+        output_fname = "Output{}.pdf".format(indexNum+1)
+        print(indexNum)
+        with open(output_fname, 'wb') as out:
+            pdf_writer.write(out)
+        indexNum += 1
 
     return ("PDF file has been split")
 

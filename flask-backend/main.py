@@ -1,8 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request,jsonify
 import base64
 import json
-from helper import pdfFile
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from celery import Celery
 from PyPDF2 import PdfFileReader, PdfFileWriter
 import os
@@ -14,9 +13,10 @@ BROKER_URL = 'redis://localhost:6379/0'
 BACKEND_URL = 'redis://localhost:6379/1'
 celery = Celery('tasks', broker=BROKER_URL, backend=BACKEND_URL)
 
-CORS(app)
+CORS(app, support_credentials=True)
 
 @app.route('/api/upload', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def receiveData():
     data = request.data
     data = data.decode("utf-8")
@@ -27,25 +27,28 @@ def receiveData():
     return "got pdf data"
 
 @app.route('/api/split',  methods=['GET'])
+@cross_origin(supports_credentials=True)
 def splitPDF():
     pageNum = PdfFileReader(open("FromClientSide.pdf", "rb")).getNumPages()
     path = './FromClientSide.pdf'
     pdf = PdfFileReader(path, "rb")
 
-    pdf_writer = PdfFileWriter()
-    indexNum = 0
+    outputIndex = 1
     # can take in variable for how many splits.. but for now I will hard code
     for index in range(0, pageNum, 3):
-        for page in range(index, pageNum):
-            pdf_writer.addPage(pdf.getPage(page))
-
-        output_fname = "Output{}.pdf".format(indexNum+1)
-        print(indexNum)
+        pdf_writer = PdfFileWriter()
+        if (index+3 < pageNum):
+            for page in range(index, index+3):
+                pdf_writer.addPage(pdf.getPage(page))
+        else:
+            for page in range(index, pageNum):
+                pdf_writer.addPage(pdf.getPage(page))
+        output_fname = "Output{}.pdf".format(outputIndex)
         with open(output_fname, 'wb') as out:
             pdf_writer.write(out)
-        indexNum += 1
+        outputIndex += 1
 
-    return ("PDF file has been split")
+    return jsonify({'data': "PDF file has been split"})
 
 @app.route('/process/<name>')
 def process(name):

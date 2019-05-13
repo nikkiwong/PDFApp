@@ -23,12 +23,42 @@ class Upload extends Component {
     }
   }
 
+  splitPDF(e){
+    var headers = new Headers();
+    headers.append('Accept', 'application/json');
+
+    headers.append('Access-Control-Allow-Origin', 'http://127.0.0.1:5000');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+
+    // headers.append('GET', 'POST', 'OPTIONS');
+    var requestOptions = { method: 'GET',
+                   headers: headers,
+                   mode: 'cors',
+                   cache: 'default',
+                  };
+
+    e.preventDefault();
+    fetch('http://127.0.0.1:5000/api/split', requestOptions)
+    .then(function(response) {
+      console.log(response)
+    })
+    // .then(function(myBlob) {
+    //   var objectURL = URL.createObjectURL(myBlob);
+    //   image.src = objectURL;
+    // })
+    .catch((error)=>{
+      console.log(error)
+    })
+  }
+
   render() {
     return (
       <div className="App">
         <h1>Upload your pdf</h1>
         <input type="file" name="file" onChange={(e)=>this.onChange(e)}></input>
-        <Split />
+        <div>
+          <input type="submit" name="split" value="Split PDF" onClick={(e)=> this.splitPDF(e)}></input>
+        </div>
       </div>
     );
   }

@@ -33,19 +33,13 @@ class Upload extends Component {
     // headers.append('GET', 'POST', 'OPTIONS');
     var requestOptions = { method: 'GET',
                    headers: headers,
-                   mode: 'cors',
                    cache: 'default',
                   };
 
     e.preventDefault();
     fetch('http://127.0.0.1:5000/api/split', requestOptions)
-    .then(function(response) {
-      console.log(response)
-    })
-    // .then(function(myBlob) {
-    //   var objectURL = URL.createObjectURL(myBlob);
-    //   image.src = objectURL;
-    // })
+      .then(response => response.json())
+      .then(data => this.setState({ file: data }))
     .catch((error)=>{
       console.log(error)
     })

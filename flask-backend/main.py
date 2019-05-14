@@ -32,23 +32,21 @@ def splitPDF():
     pageNum = PdfFileReader(open("FromClientSide.pdf", "rb")).getNumPages()
     path = './FromClientSide.pdf'
     pdf = PdfFileReader(path, "rb")
-
-    outputIndex = 1
+    splitFiles = []
     # can take in variable for how many splits.. but for now I will hard code
     for index in range(0, pageNum, 3):
         pdf_writer = PdfFileWriter()
-        if (index+3 < pageNum):
-            for page in range(index, index+3):
-                pdf_writer.addPage(pdf.getPage(page))
-        else:
-            for page in range(index, pageNum):
-                pdf_writer.addPage(pdf.getPage(page))
-        output_fname = "Output{}.pdf".format(outputIndex)
+        lastPage = index+3
+        if (lastPage > pageNum):
+            lastPage = pageNum
+        for page in range(index, lastPage):
+            pdf_writer.addPage(pdf.getPage(page))
+        output_fname = "Page {}-{}.pdf".format(index+1,lastPage)
+        splitFiles.append(output_fname)
         with open(output_fname, 'wb') as out:
             pdf_writer.write(out)
-        outputIndex += 1
 
-    return jsonify({'data': "PDF file has been split"})
+    return jsonify({'data': splitFiles})
 
 @app.route('/process/<name>')
 def process(name):

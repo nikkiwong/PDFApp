@@ -6,13 +6,14 @@ class GroupDragDrop extends Component {
     super(props);
     this.state={
       tasks: [
-          {id: "1", taskName:"Read book",type:"inProgress", backgroundColor: "red"},
-          {id: "2", taskName:"Pay bills", type:"inProgress", backgroundColor:"green"},
-          {id: "3", taskName:"Go to the gym", type:"Done", backgroundColor:"blue"},
-          {id: "4", taskName:"Play baseball", type:"Done", backgroundColor:"green"}
     	]
     }
     }
+
+  componentDidMount(){
+    console.log("from groupdragdrop", this.props.pdfData)
+    this.setState({tasks: this.props.pdfData})
+  }
 
   onDragStart = (event, taskName) => {
     	console.log('dragstart on div: ', taskName);
@@ -38,7 +39,44 @@ class GroupDragDrop extends Component {
 	    });
 	}
 
+
+  saveGrouping = (e) => {
+    const data = {
+    "language" : "Python",
+    "framework" : "Flask",
+    "website" : "Scotch",
+    "version_info" : {
+        "python" : 3.4,
+        "flask" : 0.12
+    },
+    "examples" : ["query", "form", "json"],
+    "boolean_test" : true
+}
+      var requestOptions = { method: 'POST',
+                     body: data,
+                     headers: new Headers(),
+                    };
+
+      e.preventDefault();
+      fetch('http://127.0.0.1:5000/api/saveGrouping', requestOptions)
+      .then( response => {
+    console.log("************Response*****************");
+
+    if(response.status.code === 404){
+      console.log("Failed");
+    }
+    if (response.ok) {
+      return response;
+    }
+ })
+ .then((data) => {
+   console.log(data)
+   });
+    }
+
+
   render() {
+    console.log("render")
     var tasks = {
 	      inProgress: [],
 	      Done: []
@@ -64,16 +102,15 @@ class GroupDragDrop extends Component {
           <div className="inProgress"
           	onDragOver={(event)=>this.onDragOver(event)}
           	onDrop={(event)=>{this.onDrop(event, "inProgress")}}>
-          	<span className="group-header">In Progress</span>
           	 {tasks.inProgress}
           </div>
           <div className="droppable"
           	onDragOver={(event)=>this.onDragOver(event)}
         		onDrop={(event)=>this.onDrop(event, "Done")}>
-            <span className="group-header">Done</span>
               {tasks.Done}
           </div>
           </div>
+          <input type="submit" name="Save" value="Save Grouping" onClick={(e)=> this.saveGrouping(e)}></input>
       </div>
     );
   }

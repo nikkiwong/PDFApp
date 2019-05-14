@@ -41,28 +41,19 @@ def splitPDF():
             lastPage = pageNum
         for page in range(index, lastPage):
             pdf_writer.addPage(pdf.getPage(page))
-        output_fname = "Page {}-{}.pdf".format(index+1,lastPage)
+        output_fname = "Pages {}-{}.pdf".format(index+1,lastPage)
         splitFiles.append(output_fname)
         with open(output_fname, 'wb') as out:
             pdf_writer.write(out)
 
     return jsonify({'data': splitFiles})
 
-@app.route('/process/<name>')
-def process(name):
-    reverse.delay(name)
-    return "async sent"
-
-@celery.task(name='celery_POST_data.recievePDFData')
-def recievePDFData(byteData):
-    with open('FromClientSide.pdf', 'wb') as file:
-        file.write(base64.decodestring(byteData))
-    return "celery: got pdf data"
-
-@celery.task()
-def reverse(string):
-    return string[::-1]
-
+@app.route('/api/saveGrouping',  methods=['POST'])
+@cross_origin(supports_credentials=True)
+def saveGrouping():
+    data = request.get_json()
+    print(data)
+    return "saving Grouping"
 
 if __name__ == '__main__':
     app.run(debug=True)

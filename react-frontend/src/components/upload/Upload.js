@@ -39,7 +39,10 @@ class Upload extends Component {
     e.preventDefault();
     fetch('http://127.0.0.1:5000/api/split', requestOptions)
       .then(response => response.json())
-      .then(data => this.setState({ file: data }))
+      .then((data) => {
+        this.setState({ file: data })
+        this.props.onSplitPDF(true, data)
+      })
     .catch((error)=>{
       console.log(error)
     })

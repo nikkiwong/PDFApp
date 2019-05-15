@@ -8,8 +8,6 @@ class GroupDragDrop extends Component {
       pdfs: [
     	]
     }
-    this.group1 = React.createRef();
-    this.group2 = React.createRef();
     }
 
   componentDidMount(){
@@ -41,8 +39,14 @@ class GroupDragDrop extends Component {
 
 
   saveGrouping = (e) => {
-    console.log(this.group1.current)
-    console.log(this.group2.current)
+    // let groupings = this.state.pdfs.filter((pdf) => {
+    //     let groups = []
+    //     if (pdf.type === "Group1") {
+    //         groups.push(pdf.pdfName)
+    //     }
+    //     return pdf;
+    // });
+
     var requestOptions = { method: 'POST',
                      body: "Hello",
                      headers: new Headers(),
@@ -97,14 +101,12 @@ class GroupDragDrop extends Component {
           </div>
           <h3>Group 1</h3>
           <div className="droppable"
-            ref={this.group1}
           	onDragOver={(event)=>this.onDragOver(event)}
         		onDrop={(event)=>this.onDrop(event, "Group1")}>
               {pdfs.Group1}
           </div>
           <h3>Group 2</h3>
           <div className="droppable"
-            ref={this.group2}
           	onDragOver={(event)=>this.onDragOver(event)}
         		onDrop={(event)=>this.onDrop(event, "Group2")}>
               {pdfs.Group2}

@@ -51,7 +51,7 @@ def splitPDF():
 @app.route('/api/saveGrouping',  methods=['POST'])
 @cross_origin(supports_credentials=True)
 def saveGrouping():
-    data = request.get_json()
+    data = request.data
     print(data)
     return "saving Grouping"
 

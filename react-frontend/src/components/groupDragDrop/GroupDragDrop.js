@@ -5,55 +5,46 @@ class GroupDragDrop extends Component {
   constructor(props){
     super(props);
     this.state={
-      tasks: [
+      pdfs: [
     	]
     }
+    this.group1 = React.createRef();
+    this.group2 = React.createRef();
     }
 
   componentDidMount(){
-    console.log("from groupdragdrop", this.props.pdfData)
-    this.setState({tasks: this.props.pdfData})
+    this.setState({pdfs: this.props.pdfData})
   }
 
-  onDragStart = (event, taskName) => {
-    	console.log('dragstart on div: ', taskName);
-    	event.dataTransfer.setData("taskName", taskName);
+  onDragStart = (event, pdfName) => {
+    	event.dataTransfer.setData("pdfName", pdfName);
 	}
 	onDragOver = (event) => {
 	    event.preventDefault();
 	}
 
 	onDrop = (event, cat) => {
-	    let taskName = event.dataTransfer.getData("taskName");
+	    let pdfName = event.dataTransfer.getData("pdfName");
 
-	    let tasks = this.state.tasks.filter((task) => {
-	        if (task.taskName === taskName) {
-	            task.type = cat;
+	    let pdfs = this.state.pdfs.filter((pdf) => {
+	        if (pdf.pdfName === pdfName) {
+	            pdf.type = cat;
 	        }
-	        return task;
+	        return pdf;
 	    });
 
 	    this.setState({
 	        ...this.state,
-	        tasks
+	        pdfs
 	    });
 	}
 
 
   saveGrouping = (e) => {
-    const data = {
-    "language" : "Python",
-    "framework" : "Flask",
-    "website" : "Scotch",
-    "version_info" : {
-        "python" : 3.4,
-        "flask" : 0.12
-    },
-    "examples" : ["query", "form", "json"],
-    "boolean_test" : true
-}
-      var requestOptions = { method: 'POST',
-                     body: data,
+    console.log(this.group1.current)
+    console.log(this.group2.current)
+    var requestOptions = { method: 'POST',
+                     body: "Hello",
                      headers: new Headers(),
                     };
 
@@ -76,20 +67,20 @@ class GroupDragDrop extends Component {
 
 
   render() {
-    console.log("render")
-    var tasks = {
-	      inProgress: [],
-	      Done: []
+    var pdfs = {
+	      PDFHolder: [],
+	      Group1: [],
+        Group2: [],
 	    }
 
-    this.state.tasks.forEach ((task) => {
-		  tasks[task.type].push(
-		    <div key={task.id}
-		      onDragStart = {(event) => this.onDragStart(event, task.taskName)}
+    this.state.pdfs.forEach ((pdf) => {
+		  pdfs[pdf.type].push(
+		    <div key={pdf.id}
+		      onDragStart = {(event) => this.onDragStart(event, pdf.pdfName)}
 		      draggable
 		      className="draggable"
-		      style = {{backgroundColor: task.bgcolor}}>
-		      {task.taskName}
+		      style = {{backgroundColor: pdf.bgcolor}}>
+		      {pdf.pdfName}
 		    </div>
 		  );
 		});
@@ -98,16 +89,25 @@ class GroupDragDrop extends Component {
         // <h1>Please group your pdfs and click save</h1>
         <div className="App">
         <div className="drag-container">
-          <h2 className="head">To Do List Drag & Drop</h2>
-          <div className="inProgress"
+          <h2 className="head">Group your PDFs</h2>
+          <div className="PDFHolder"
           	onDragOver={(event)=>this.onDragOver(event)}
-          	onDrop={(event)=>{this.onDrop(event, "inProgress")}}>
-          	 {tasks.inProgress}
+          	onDrop={(event)=>{this.onDrop(event, "PDFHolder")}}>
+          	 {pdfs.PDFHolder}
           </div>
+          <h3>Group 1</h3>
           <div className="droppable"
+            ref={this.group1}
           	onDragOver={(event)=>this.onDragOver(event)}
-        		onDrop={(event)=>this.onDrop(event, "Done")}>
-              {tasks.Done}
+        		onDrop={(event)=>this.onDrop(event, "Group1")}>
+              {pdfs.Group1}
+          </div>
+          <h3>Group 2</h3>
+          <div className="droppable"
+            ref={this.group2}
+          	onDragOver={(event)=>this.onDragOver(event)}
+        		onDrop={(event)=>this.onDrop(event, "Group2")}>
+              {pdfs.Group2}
           </div>
           </div>
           <input type="submit" name="Save" value="Save Grouping" onClick={(e)=> this.saveGrouping(e)}></input>

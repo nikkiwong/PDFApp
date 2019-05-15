@@ -16,7 +16,7 @@ class App extends Component {
     IsSplitSuccessful(splitSuccessful, data){
      const PDFFileNames = []
        for ( let i = 0; i<data["data"].length; i++){
-         PDFFileNames.push({id: i+1, taskName:data["data"][i],type:"inProgress", backgroundColor: "red"})
+         PDFFileNames.push({id: i+1, pdfName:data["data"][i],type:"PDFHolder", backgroundColor: "red"})
        }
        this.setState({ splitSuccessful: splitSuccessful, data: PDFFileNames });
    }

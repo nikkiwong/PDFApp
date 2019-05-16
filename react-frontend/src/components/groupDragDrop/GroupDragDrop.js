@@ -39,16 +39,20 @@ class GroupDragDrop extends Component {
 
 
   saveGrouping = (e) => {
-    // let groupings = this.state.pdfs.filter((pdf) => {
-    //     let groups = []
-    //     if (pdf.type === "Group1") {
-    //         groups.push(pdf.pdfName)
-    //     }
-    //     return pdf;
-    // });
-
+    const group1 = []
+    const group2 = []
+    this.state.pdfs.forEach((pdf) => {
+        if (pdf.type === "Group1") {
+            group1.push(`"${pdf.pdfName}"`)
+        }
+        if (pdf.type === "Group2") {
+            group2.push(`"${pdf.pdfName}"`)
+        }
+    });
+    console.log("groupings")
+    console.log(`{"Group 1": [${group1}], "Group 2": [${group2}]}`)
     var requestOptions = { method: 'POST',
-                     body: "Hello",
+                     body: `{"Group 1": [${group1}], "Group 2": [${group2}]}`,
                      headers: new Headers(),
                     };
 

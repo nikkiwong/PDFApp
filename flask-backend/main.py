@@ -52,7 +52,10 @@ def splitPDF():
 @cross_origin(supports_credentials=True)
 def saveGrouping():
     data = request.data
-    print(data)
+    d = data.decode("utf-8")
+    d = json.loads(d)
+    print(d)
+    print(type(d))
     return "saving Grouping"
 
 if __name__ == '__main__':

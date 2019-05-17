@@ -1,17 +1,16 @@
 from flask import Flask, request,jsonify
 import base64
+import redis
 import json
 from flask_cors import CORS, cross_origin
-from celery import Celery
 from PyPDF2 import PdfFileReader, PdfFileWriter
+from helper import convertToBinaryData
 import os
 os.environ.setdefault('FORKED_BY_MULTIPROCESSING', '1')
 
 app = Flask(__name__)
 
-BROKER_URL = 'redis://localhost:6379/0'
-BACKEND_URL = 'redis://localhost:6379/1'
-celery = Celery('tasks', broker=BROKER_URL, backend=BACKEND_URL)
+r = redis.Redis(host='localhost', port=6379, db=0)
 
 CORS(app, support_credentials=True)
 
@@ -55,8 +54,13 @@ def saveGrouping():
     d = data.decode("utf-8")
     d = json.loads(d)
     print(d)
-    print(type(d))
-    return "saving Grouping"
+    fileInBinaryFormat = ""
+    for key in d:
+        for file in d[key]:
+            fileInBinaryFormat = convertToBinaryData(file)
+            r.sadd(key, fileInBinaryFormat)
+        print(r.scard(key))
+    return fileInBinaryFormat
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,7 +1,5 @@
-from flask import make_response
-
-def pdfFile(pdf):
-    response = make_response(pdf)
-    response.headers['Content-Disposition'] = "attachment; filename='sakulaci.pdf"
-    response.mimetype = 'application/pdf'
-    return response
+def convertToBinaryData(filename):
+    #Convert digital data to binary format
+    with open(filename, 'rb') as file:
+        binaryData = file.read()
+    return binaryData

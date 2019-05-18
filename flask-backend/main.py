@@ -33,9 +33,10 @@ def splitPDF():
     pdf = PdfFileReader(path, "rb")
     splitFiles = []
     # can take in variable for how many splits.. but for now I will hard code
-    for index in range(0, pageNum, 3):
+    pageRange = 20
+    for index in range(0, pageNum, pageRange):
         pdf_writer = PdfFileWriter()
-        lastPage = index+3
+        lastPage = index+pageRange
         if (lastPage > pageNum):
             lastPage = pageNum
         for page in range(index, lastPage):

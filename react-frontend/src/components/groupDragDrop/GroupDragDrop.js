@@ -5,8 +5,8 @@ class GroupDragDrop extends Component {
   constructor(props){
     super(props);
     this.state={
-      pdfs: [
-    	]
+      pdfs: [],
+      groupings: {}
     }
     }
 
@@ -43,16 +43,16 @@ class GroupDragDrop extends Component {
     const group2 = []
     this.state.pdfs.forEach((pdf) => {
         if (pdf.type === "Group1") {
-            group1.push(`"${pdf.pdfName}"`)
+            group1.push(pdf.pdfName)
         }
         if (pdf.type === "Group2") {
-            group2.push(`"${pdf.pdfName}"`)
+            group2.push(pdf.pdfName)
         }
     });
-    console.log("groupings")
-    console.log(`{"Group 1": [${group1}], "Group 2": [${group2}]}`)
+    const groupings = { "Group 1": group1, "Group 2": group2}
+    this.setState({groupings: groupings})
     var requestOptions = { method: 'POST',
-                     body: `{"Group 1": [${group1}], "Group 2": [${group2}]}`,
+                     body: JSON.stringify(groupings),
                      headers: new Headers(),
                     };
 
@@ -70,6 +70,10 @@ class GroupDragDrop extends Component {
  })
  .then((data) => {
    console.log(data)
+   this.props.onGroupSuccessful(true, this.state.groupings)
+   })
+   .catch((error)=>{
+     console.log(error)
    });
     }
 
@@ -116,7 +120,7 @@ class GroupDragDrop extends Component {
               {pdfs.Group2}
           </div>
           </div>
-          <input type="submit" name="Save" value="Save Grouping" onClick={(e)=> this.saveGrouping(e)}></input>
+          <input className="groupButton" type="submit" name="Save" value="Save Grouping" onClick={(e)=> this.saveGrouping(e)}></input>
       </div>
     );
   }
